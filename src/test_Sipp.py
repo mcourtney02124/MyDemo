@@ -27,7 +27,6 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.port == "5060")
         self.assertTrue(p.command == "")
         self.assertTrue(p.pid == 0)
-        p.Cleanup()
 
     def test_create_default_client(self):
         """create a default SippClient object, do we get the expected data in the object?"""
@@ -39,7 +38,6 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.pid == 0)
         self.assertTrue(p.target == "127.0.0.1")
         self.assertTrue(p.rport == "5060")
-        p.Cleanup()
         
     def test_launch_default_server(self):
         """ make a default SippSserver and launch it, do we get the expected output in the stdout file"""
@@ -48,7 +46,7 @@ class SippTestCase(unittest.TestCase):
         sippServerProc = Sipp.SippServer.Launch(p)
         time.sleep(5)
         sippServerProc.terminate()
-        p.Cleanup()
+
         
 
 if __name__ == '__main__':

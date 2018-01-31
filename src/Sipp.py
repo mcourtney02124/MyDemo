@@ -21,7 +21,7 @@ class SippUtils:
 		foundFailed = False
 		try:
 			fh = open(filePath)
-			for line in enumerate(fh, start=1):
+			for lino, line in enumerate(fh, start=1):
 				line = line.strip()
 				if line[:12] == "Failed call":
 					foundFailed = True
@@ -46,11 +46,6 @@ class SippServer:
 		self.port = str(port)
 		self.command = command
 		self.pid = 0
-		#self.outfile_path = script + ".out"
-		#self.outfile = open(self.outfile_path,"+w")
-		
-	def Cleanup(self):
-		self.outfile.close()
 
 		
 	def Launch(self):
