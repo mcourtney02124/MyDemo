@@ -6,8 +6,38 @@ This module provides support for executing sipp scripts
 
 """
 
+import os.path
+import re
+import sys
 import shlex
 import subprocess
+
+failCount_re = re.compile(r"""(\d+)$""")
+
+class SippUtils:
+	def NoFailedCalls(self,script,pid):
+		filePath = script[:-4] + "_" + str(pid) + "_screen.log"
+		fh = None
+		foundFailed = False
+		try:
+			fh = open(filePath)
+			for line in enumerate(fh, start=1):
+				line = line.strip()
+				if line[:12] == "Failed call":
+					foundFailed = True
+					failCount = int(failCount_re.search(line))
+					print("value of failCount is",failCount)
+			if failCount == 0:
+				return True
+			else:
+				return False
+		except {EnvironmentError,ValueError,TypeError} as err:
+				print("{0}: error {1} trying to read screen.log file".format(os.path.basename(sys.argv[0]),err))
+				return False
+		finally:
+			if fh is not None:
+				fh.close()
+	
 
 class SippServer:
 
@@ -15,8 +45,9 @@ class SippServer:
 		self.script = script
 		self.port = str(port)
 		self.command = command
-		self.outfile_path = script + ".out"
-		self.outfile = open(self.outfile_path,"+w")
+		self.pid = 0
+		#self.outfile_path = script + ".out"
+		#self.outfile = open(self.outfile_path,"+w")
 		
 	def Cleanup(self):
 		self.outfile.close()
@@ -24,8 +55,10 @@ class SippServer:
 		
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
-		args = ['sipp', '-sf', self.script, '-p', self.port] + moreArgs[:]
-		return subprocess.Popen(args, stdout = self.outfile, stderr = self.outfile)
+		args = ['sipp', '-sf', self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
+		p = subprocess.Popen(args)
+		self.pid = p.pid
+		return p
 		
 class SippClient(SippServer):
 
@@ -36,5 +69,7 @@ class SippClient(SippServer):
 		
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
-		args = ['sipp', self.target + ":" + self.rport, '-sf', self.script, '-p', self.port] + moreArgs[:]
-		return subprocess.Popen(args, stdout = self.outfile, stderr = self.outfile)
+		args = ['sipp', self.target + ":" + self.rport, '-sf', self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
+		p = subprocess.Popen(args)
+		self.pid = p.pid
+		return p
