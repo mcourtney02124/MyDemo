@@ -17,11 +17,14 @@ class SippServer:
 		self.command = command
 		self.outfile_path = script + ".out"
 		self.outfile = open(self.outfile_path,"+w")
+		
+	def Cleanup(self):
+		self.outfile.close()
 
 		
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
-		args = ['sipp', '-sf', self.script, '-p', port] + moreArgs[:]
+		args = ['sipp', '-sf', self.script, '-p', self.port] + moreArgs[:]
 		return subprocess.Popen(args, stdout = self.outfile, stderr = self.outfile)
 		
 class SippClient(SippServer):
@@ -33,5 +36,5 @@ class SippClient(SippServer):
 		
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
-		args = ['sipp', self.target + ":" + self.rport, '-sf', self.script, '-p', port] + moreArgs[:]
+		args = ['sipp', self.target + ":" + self.rport, '-sf', self.script, '-p', self.port] + moreArgs[:]
 		return subprocess.Popen(args, stdout = self.outfile, stderr = self.outfile)
