@@ -9,6 +9,7 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 import unittest
 import Sipp
 import os.path
+import time
 
 class SippTestCase(unittest.TestCase):
     """Tests for `Sipp.py`."""
@@ -21,6 +22,7 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.port == "5060")
         self.assertTrue(p.command == "")
         self.assertTrue(os.path.isfile(p.outfile_path))
+        p.Cleanup()
 
     def test_create_default_client(self):
         """create a default SippClient object, do we get the expected data in the object?"""
@@ -32,6 +34,17 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(os.path.isfile(p.outfile_path))
         self.assertTrue(p.target == "127.0.0.1")
         self.assertTrue(p.rport == "5060")
+        p.Cleanup()
+        
+    def test_launch_default_server(self):
+        """ make a default SippSserver and llaunch it, do we get the expected output in the stdout file"""
+        p = Sipp.SippServer()
+        print ("running the test for launching default SippServer")
+        sippServerProc = Sipp.SippServer.Launch(p)
+        time.sleep(5)
+        sippServerProc.terminate()
+        p.Cleanup()
+        
 
 if __name__ == '__main__':
     unittest.main()
