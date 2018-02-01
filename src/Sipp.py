@@ -12,26 +12,26 @@ import sys
 import shlex
 import subprocess
 
-failCount_re = re.compile(r"""(\d+)$""")
+failCount_re = re.compile(r"""^Failed.*(\d+)$""")
 
 class SippUtils:
 	def NoFailedCalls(self,script,pid):
 		filePath = script[:-4] + "_" + str(pid) + "_screen.log"
 		fh = None
-		foundFailed = False
+		failCount = -1
 		try:
 			fh = open(filePath)
 			for lino, line in enumerate(fh, start=1):
 				line = line.strip()
-				if line[:12] == "Failed call":
-					foundFailed = True
-					failCount = int(failCount_re.search(line))
+				match = failCount_re.search(line)
+				if match:
+					failCount = int(match.group(1))
 					print("value of failCount is",failCount)
 			if failCount == 0:
 				return True
 			else:
 				return False
-		except {EnvironmentError,ValueError,TypeError} as err:
+		except ValueError as err:
 				print("{0}: error {1} trying to read screen.log file".format(os.path.basename(sys.argv[0]),err))
 				return False
 		finally:
