@@ -15,7 +15,7 @@ success_re = re.compile(r"""^Successful.*\s(\d+)$""")
 
 	
 def ParseScreenLog(script,pid,regexper):
-	filePath = script[:-4] + "_" + str(pid) + "_screen.log"
+	filePath = "data/" + script[:-4] + "_" + str(pid) + "_screen.log"
 	fh = None
 	retValue = None
 	if os.path.isfile(filePath):

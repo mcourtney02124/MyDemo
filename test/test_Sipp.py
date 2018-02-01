@@ -8,7 +8,7 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 
 import unittest
 from src.Sipp import SippServer,SippClient
-from src.SippUtils import NoFaileCalls
+from src.SippUtils import NoFailedCalls
 import time
 
 class SippTestCase(unittest.TestCase):
