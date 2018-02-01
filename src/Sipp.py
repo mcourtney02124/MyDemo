@@ -6,37 +6,8 @@ This module provides support for executing sipp scripts
 
 """
 
-import os.path
-import re
-import sys
 import shlex
 import subprocess
-
-failCount_re = re.compile(r"""^Failed.*(\d+)$""")
-
-class SippUtils:
-	def NoFailedCalls(self,script,pid):
-		filePath = script[:-4] + "_" + str(pid) + "_screen.log"
-		fh = None
-		failCount = -1
-		try:
-			fh = open(filePath)
-			for lino, line in enumerate(fh, start=1):
-				line = line.strip()
-				match = failCount_re.search(line)
-				if match:
-					failCount = int(match.group(1))
-					print("value of failCount is",failCount)
-			if failCount == 0:
-				return True
-			else:
-				return False
-		except ValueError as err:
-				print("{0}: error {1} trying to read screen.log file".format(os.path.basename(sys.argv[0]),err))
-				return False
-		finally:
-			if fh is not None:
-				fh.close()
 	
 
 class SippServer:
@@ -51,7 +22,7 @@ class SippServer:
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
 		args = ['sipp', '-sf', self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
-		p = subprocess.Popen(args)
+		p = subprocess.Popen(args, stdout = subprocess.DEVNULL)
 		self.pid = p.pid
 		return p
 		
@@ -65,6 +36,6 @@ class SippClient(SippServer):
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
 		args = ['sipp', self.target + ":" + self.rport, '-sf', self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
-		p = subprocess.Popen(args)
+		p = subprocess.Popen(args, stdout = subprocess.DEVNULL)
 		self.pid = p.pid
 		return p

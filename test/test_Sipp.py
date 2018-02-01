@@ -8,16 +8,11 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 
 import unittest
 import Sipp
-import os.path
+import SippUtils
 import time
 
 class SippTestCase(unittest.TestCase):
     """Tests for `Sipp.py`."""
-    
-    def test_NoFailedCalls(self):
-        script = "uas_ivr.xml"
-        pid = 3875
-        self.assertTrue(Sipp.SippUtils.NoFailedCalls(self,script,pid))
 
     def test_create_default_server(self):
         """create a default SippServer object, do we get the expected data in the object?"""
@@ -40,14 +35,14 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.rport == "5060")
         
     def test_launch_default_server(self):
-        """ make a default SippSserver and launch it, do we get the expected output in the stdout file"""
+        """ make a default SippServer and launch it, do we get the expected output"""
         p = Sipp.SippServer()
         print ("running the test for launching default SippServer")
         sippServerProc = Sipp.SippServer.Launch(p)
         time.sleep(5)
         sippServerProc.terminate()
+        self.assertTrue(SippUtils.NoFailedCalls(p.script,p.pid))
 
         
-
-if __name__ == '__main__':
-    unittest.main()
+suite = unittest.TestLoader().loadTestsFromTestCase(SippTestCase)
+unittest.TextTestRunner(verbosity=2).run(suite)
