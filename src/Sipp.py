@@ -22,6 +22,7 @@ class SippServer:
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
 		args = ['sipp', '-sf', 'data/' + self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
+		print(args)
 		p = subprocess.Popen(args, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, universal_newlines=True)
 		self.pid = p.pid
 		return p
