@@ -2,7 +2,7 @@
 # Copyright (c) 2018 Meredith Courtney All rights reserved.
 
 """
-This module provides support for executing sipp scripts
+This module provides support for executing sipp scripts located in the data directory
 
 """
 
@@ -35,7 +35,7 @@ class SippClient(SippServer):
 		
 	def Launch(self):
 		moreArgs = shlex.split(self.command)
-		args = ['sipp', self.target + ":" + self.rport, '-sf', self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
+		args = ['sipp', self.target + ":" + self.rport, '-sf', '../data/' + self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
 		p = subprocess.Popen(args, stdout = subprocess.DEVNULL)
 		self.pid = p.pid
 		return p
