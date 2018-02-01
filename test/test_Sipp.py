@@ -7,16 +7,16 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 """
 
 import unittest
-import Sipp
-import SippUtils
+from src.Sipp import SippServer,SippClient
+from src.SippUtils import NoFaileCalls
 import time
 
 class SippTestCase(unittest.TestCase):
-    """Tests for `Sipp.py`."""
+    """Tests for `Sipp.py`, assumed to be executed from top level directory"""
 
     def test_create_default_server(self):
         """create a default SippServer object, do we get the expected data in the object?"""
-        p = Sipp.SippServer()
+        p = SippServer()
         print ("running the test for create default SippServer")
         self.assertTrue(p.script == "uas.xml")
         self.assertTrue(p.port == "5060")
@@ -25,7 +25,7 @@ class SippTestCase(unittest.TestCase):
 
     def test_create_default_client(self):
         """create a default SippClient object, do we get the expected data in the object?"""
-        p = Sipp.SippClient()
+        p = SippClient()
         print ("running the test for create default SippClient")
         self.assertTrue(p.script == "uac.xml")
         self.assertTrue(p.port == "6060")
@@ -36,12 +36,12 @@ class SippTestCase(unittest.TestCase):
         
     def test_launch_default_server(self):
         """ make a default SippServer and launch it, do we get the expected output"""
-        p = Sipp.SippServer()
+        p = SippServer()
         print ("running the test for launching default SippServer")
-        sippServerProc = Sipp.SippServer.Launch(p)
+        sippServerProc = SippServer.Launch(p)
         time.sleep(5)
         sippServerProc.terminate()
-        self.assertTrue(SippUtils.NoFailedCalls(p.script,p.pid))
+        self.assertTrue(NoFailedCalls(p.script,p.pid))
 
         
 suite = unittest.TestLoader().loadTestsFromTestCase(SippTestCase)

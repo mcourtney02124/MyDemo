@@ -7,20 +7,20 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 """
 
 import unittest
-import SippUtils
+from src.SippUtils import NoFailedCalls,HowManySuccess
 
 class SippUtilsTestCase(unittest.TestCase):
-    """Tests for `Sipp.py`."""
+    """Tests for `SippUtils.py`, assumed to be executed from top level directory"""
     
     def test_NoFailedCalls(self):
-        script = "test_data.xml"
+        script = "data/test_data.xml"
         pid = 3875
-        self.assertTrue(SippUtils.NoFailedCalls(script,pid))
+        self.assertTrue(SNoFailedCalls(script,pid))
         
     def test_HowManySuccess(self):
-        script = "test_data.xml"
+        script = "data/test_data.xml"
         pid = 3876
-        self.assertTrue(SippUtils.HowManySuccess(script,pid) == 10)
+        self.assertTrue(HowManySuccess(script,pid) == 10)
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(SippUtilsTestCase)
