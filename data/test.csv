@@ -1,0 +1,2 @@
+SEQUENTIAL
+testsonusnet.com;[local_port];TestUser;[authentication  username=TestUser@testsonusnet.com password=india integrity-protected=no];
