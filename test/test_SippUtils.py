@@ -13,12 +13,12 @@ class SippUtilsTestCase(unittest.TestCase):
     """Tests for `SippUtils.py`, assumed to be executed from top level directory"""
     
     def test_NoFailedCalls(self):
-        script = "data/test_data.xml"
+        script = "test_data.xml"
         pid = 3875
-        self.assertTrue(SNoFailedCalls(script,pid))
+        self.assertTrue(NoFailedCalls(script,pid))
         
     def test_HowManySuccess(self):
-        script = "data/test_data.xml"
+        script = "test_data.xml"
         pid = 3876
         self.assertTrue(HowManySuccess(script,pid) == 10)
 
