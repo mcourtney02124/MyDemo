@@ -40,7 +40,12 @@ class SippTestCase(unittest.TestCase):
         print ("running the test for launching default SippServer")
         sippServerProc = SippServer.Launch(p)
         time.sleep(5)
-        sippServerProc.terminate()
+        try:
+            outs, errs = sippServerProc.communicate(input = "q", timeout = 15)
+        except TimeoutExpired:
+            sippServerProc.kill()
+            outs.errs = sippServerProc.communicate()
+        
         self.assertTrue(NoFailedCalls(p.script,p.pid))
 
         
