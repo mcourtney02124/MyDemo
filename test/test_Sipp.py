@@ -8,7 +8,7 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 
 import unittest
 from src.Sipp import SippServer,SippClient
-from src.SippUtils import NoFailedCalls
+from src.SippUtils import NoFailedCalls,HowManySuccess,CleanUpScreenLog
 import time
 
 class SippTestCase(unittest.TestCase):
@@ -47,6 +47,7 @@ class SippTestCase(unittest.TestCase):
             outs.errs = sippServerProc.communicate()
         
         self.assertTrue(NoFailedCalls(p.script,p.pid))
+        CleanUpScreenLog(p.script,p.pid)
         
     def test_launch_server_options(self):
         """ make a non-default SippServer """

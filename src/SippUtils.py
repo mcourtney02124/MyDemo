@@ -6,6 +6,7 @@ This module provides utilities for use with execution of sipp scripts
 
 """
 
+import os
 import os.path
 import re
 import sys
@@ -50,4 +51,11 @@ def HowManySuccess(script,pid):
 	else:
 		return retValue
 	
+def CleanUpScreenLog(script,pid):
+	filePath = "data/" + script[:-4] + "_" + str(pid) + "_screen.log"
+	try:
+		os.remove(filePath)
+	except OSError:
+		pass
 		
+	
