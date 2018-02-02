@@ -13,11 +13,10 @@ import subprocess
 class SippServer:
 
 	# set interactive = True if the script takes input, INCLUDING "q" for clean stop 
-	def __init__(self, script = "uas.xml", port  = 5060, command = "", interactive = False):
+	def __init__(self, script = "uas.xml", port  = 5060, command = ""):
 		self.script = script
 		self.port = str(port)
 		self.command = command
-		self.interactive = interactive
 		self.pid = 0
 
 		
@@ -25,11 +24,7 @@ class SippServer:
 		moreArgs = shlex.split(self.command)
 		args = ['sipp', '-sf', 'data/' + self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
 		print("launching server: ",args)
-		if self.interactive:
-			filedes = subprocess.PIPE
-		else:
-			 filedes = subprocess.DEVNULL
-		p = subprocess.Popen(args, stdin = filedes, stdout = filedes, stderr = filedes, universal_newlines=True)
+		p = subprocess.Popen(args, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, universal_newlines=True)
 		self.pid = p.pid
 		return p
 		
@@ -44,10 +39,6 @@ class SippClient(SippServer):
 		moreArgs = shlex.split(self.command)
 		args = ['sipp', self.target + ":" + self.rport, '-sf', 'data/' + self.script, '-p', self.port, '-trace_screen'] + moreArgs[:]
 		print("launching client: ",args)
-		if self.interactive:
-			filedes = subprocess.PIPE
-		else:
-			 filedes = subprocess.DEVNULL
-		p = subprocess.Popen(args, stdin = filedes, stdout = filedes, stderr = filedes, universal_newlines=True)
+		p = subprocess.Popen(args, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, universal_newlines=True)
 		self.pid = p.pid
 		return p
