@@ -35,8 +35,8 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.rport == "5060")
         
     def test_launch_default_server(self):
-        """ make a default (almost, need interactive) SippServer and launch it, do we get the expected output"""
-        p = SippServer(interactive=True)
+        """ make a default SippServer and launch it, do we get the expected output"""
+        p = SippServer()
         print ("running the test for launching default SippServer")
         sippServerProc = SippServer.Launch(p)
         time.sleep(5)
@@ -52,7 +52,7 @@ class SippTestCase(unittest.TestCase):
         
     def test_launch_server_options(self):
         """ make a non-default SippServer """
-        p = SippServer(script="uas_ivr.xml",port=7070,command="-m 1",interactive=True)
+        p = SippServer(script="uas_ivr.xml",port=7070,command="-m 1")
         print("running the test for creating and launching non-default SippServer")
         self.assertTrue(p.script == "uas_ivr.xml")
         self.assertTrue(p.port == "7070")
