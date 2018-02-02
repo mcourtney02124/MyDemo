@@ -35,7 +35,7 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.rport == "5060")
         
     def test_launch_default_server(self):
-        """ make a default SippServer and launch it, do we get the expected output"""
+        """ make a default (almost, need interactive) SippServer and launch it, do we get the expected output"""
         p = SippServer(interactive=True)
         print ("running the test for launching default SippServer")
         sippServerProc = SippServer.Launch(p)
@@ -46,8 +46,9 @@ class SippTestCase(unittest.TestCase):
             sippServerProc.kill()
             outs.errs = sippServerProc.communicate()
         
+        # script ran, took no calls, clean manual shutdown
         self.assertTrue(NoFailedCalls(p.script,p.pid))
-        CleanUpScreenLog(p.script,p.pid)
+        #CleanUpScreenLog(p.script,p.pid)
         
     def test_launch_server_options(self):
         """ make a non-default SippServer """
@@ -74,12 +75,21 @@ class SippTestCase(unittest.TestCase):
         time.sleep(2)
         sippClientProc = SippClient.Launch(pc)
         time.sleep(12)
-        # at this point, both processes have finished and created their trace_screen files
+        # at this point, both processes have finished and created their trace_screen files, but make sure they are down
+        try:
+            outs, errs = sippClientProc.communicate(input = "q", timeout = 10)
+        except TimeoutExpired:
+            sippClientProc.kill()
+            outs.errs = sippClientProc.communicate()
+        try:
+            outs, errs = sippServerProc.communicate(input = "q", timeout = 10)
+        except TimeoutExpired:
+            sippServerProc.kill()
+            outs.errs = sippServerProc.communicate()
+                       
         self.assertTrue(HowManySuccess(ps.script,ps.pid)==1)
         self.assertTrue(HowManySuccess(pc.script,pc.pid)==1)
-        #make sure the processes are down, in case something went wrong
-        sippServerProc.kill()
-        sippClientProc.kill()
+
         
 
         
