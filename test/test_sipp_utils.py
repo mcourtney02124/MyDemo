@@ -2,26 +2,43 @@
 # Copyright (c) 2018 Meredith Courtney All rights reserved.
 
 """
-This module provides unit tests for executing sipp scripts (Sipp module)
+This module provides unit tests for utility functions used with sipp execution (the sipp_procs module).
 
 """
 
+import os.path
+import shutil
 import unittest
-from src.SippUtils import NoFailedCalls,HowManySuccess
+
+from src.sipp_utils import no_failed_calls, how_many_success
+
 
 class SippUtilsTestCase(unittest.TestCase):
-    """Tests for `SippUtils.py`, assumed to be executed from top level directory"""
+    """Tests for `sipp_utils.py`, these are assumed to be executed from top level directory."""
     
-    def test_NoFailedCalls(self):
+    def test_no_failed_calls(self):
+        """no_failed_calls: check a saved sipp screen log for a run that had 0 failed calls."""
         script = "test_data.xml"
         pid = 3875
-        self.assertTrue(NoFailedCalls(script,pid))
+        self.assertTrue(no_failed_calls(script,pid))
         
-    def test_HowManySuccess(self):
+    def test_how_many_success(self):
+        """how_many_success: check a saved sipp screen log for a run that had 10 successful calls."""
         script = "test_data.xml"
         pid = 3876
-        self.assertTrue(HowManySuccess(script,pid) == 10)
+        self.assertTrue(how_many_success(script,pid) == 10)
 
-
-suite = unittest.TestLoader().loadTestsFromTestCase(SippUtilsTestCase)
-unittest.TextTestRunner(verbosity=2).run(suite)
+    def test_cleanup_screen_log(self):
+        """cleanup:screen_log: delete sipp screen log from the data directory, identified by script name and process id."""
+        file_path = "data/test_data_3877_screen.log"
+        try:
+            shutil.copy("data/test_data_3876_screen.log", file_path)
+        except IOError:
+            self.fail(msg="could not make test file to be deleted")
+            return
+            
+        script = "test_data.xml"
+        pid = 3877
+        cleanup_screen_log(script, pid)
+        self.assertFalse(os.path.isfile(file_path))
+        

@@ -7,26 +7,28 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 """
 
 import unittest
-from src.Sipp import SippServer,SippClient
-from src.SippUtils import NoFailedCalls,HowManySuccess,CleanUpScreenLog
 import time
+
+from src.sipp_procs import SippServer, SippClient
+from src.sipp_utils import no_failed_calls, how_many_success, cleanup_screen_log
+
 
 class SippTestCase(unittest.TestCase):
     """Tests for `Sipp.py`, assumed to be executed from top level directory"""
 
     def test_create_default_server(self):
-        """create a default SippServer object, do we get the expected data in the object?"""
+        """Create a default SippServer object, do we get the expected data in the object?"""
+        
         p = SippServer()
-        print ("running the test for create default SippServer")
         self.assertTrue(p.script == "uas.xml")
         self.assertTrue(p.port == "5060")
         self.assertTrue(p.command == "")
         self.assertTrue(p.pid == 0)
 
     def test_create_default_client(self):
-        """create a default SippClient object, do we get the expected data in the object?"""
+        """Create a default SippClient object, do we get the expected data in the object?"""
+        
         p = SippClient()
-        print ("running the test for create default SippClient")
         self.assertTrue(p.script == "uac.xml")
         self.assertTrue(p.port == "6060")
         self.assertTrue(p.command == "")
@@ -35,63 +37,62 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(p.rport == "5060")
         
     def test_launch_default_server(self):
-        """ make a default SippServer and launch it, do we get the expected output"""
+        """Make a default SippServer and launch it, do we get the expected output."""
+        
         p = SippServer()
-        print ("running the test for launching default SippServer")
-        sippServerProc = SippServer.Launch(p)
+        sipp_server_proc = SippServer.launch(p)
         time.sleep(5)
         try:
-            outs, errs = sippServerProc.communicate(input = "q", timeout = 15)
+            outs, errs = sipp_server_proc.communicate(input = "q", timeout = 15)
         except TimeoutExpired:
-            sippServerProc.kill()
-            outs.errs = sippServerProc.communicate()
+            sipp_server_proc.kill()
+            outs.errs = sipp_server_proc.communicate()
         
-        # script ran, took no calls, clean manual shutdown
-        self.assertTrue(NoFailedCalls(p.script,p.pid))
-        #CleanUpScreenLog(p.script,p.pid)
+        # The script ran, took no calls, and there was a clean manual shutdown.
+        self.assertTrue(no_failed_calls(p.script, p.pid))
+        cleanup_screen_log(p.script,p.pid)
         
     def test_launch_server_options(self):
-        """ make a non-default SippServer """
+        """Make and launch a non-default SippServer ."""
         p = SippServer(script="uas_ivr.xml",port=7070,command="-m 1")
-        print("running the test for creating and launching non-default SippServer")
         self.assertTrue(p.script == "uas_ivr.xml")
         self.assertTrue(p.port == "7070")
         self.assertTrue(p.command == "-m 1")
-        sippServerProc  = SippServer.Launch(p)
+        sipp_server_proc  = SippServer.launch(p)
         time.sleep(5)
         try:
-            outs, errs = sippServerProc.communicate(input = "q", timeout = 15)
+            outs, errs = sipp_server_proc.communicate(input = "q", timeout = 15)
         except TimeoutExpired:
-            sippServerProc.kill()
-            outs.errs = sippServerProc.communicate()
+            sipp_server_proc.kill()
+            outs.errs = sipp_server_proc.communicate()
         
-        self.assertTrue(NoFailedCalls(p.script,p.pid))
+        self.assertTrue(no_failed_calls(p.script, p.pid))
+        cleanup_screen_log(p.script, p.pid)
         
     def test_run_1_call(self):
-        " make and launch server, make and launch client to run 1 call, both report 1 successful call"
+        """Make and launch server, make and launch client to run 1 call, both report 1 successful call."""
         ps = SippServer(command="-m 1")
         pc = SippClient(command="-m 1")
-        sippServerProc = SippServer.Launch(ps)
+        sipp_server_proc = SippServer.launch(ps)
         time.sleep(2)
-        sippClientProc = SippClient.Launch(pc)
+        sipp_client_proc = SippClient.launch(pc)
         time.sleep(12)
         # at this point, both processes have finished and created their trace_screen files, but make sure they are down
         try:
-            outs, errs = sippClientProc.communicate(input = "q", timeout = 10)
+            outs, errs = sipp_client_proc.communicate(input = "q", timeout = 10)
         except TimeoutExpired:
-            sippClientProc.kill()
-            outs.errs = sippClientProc.communicate()
+            sipp_client_proc.kill()
+            outs.errs = sipp_client_proc.communicate()
+            
         try:
-            outs, errs = sippServerProc.communicate(input = "q", timeout = 10)
+            outs, errs = sipp_server_proc.communicate(input = "q", timeout = 10)
         except TimeoutExpired:
-            sippServerProc.kill()
-            outs.errs = sippServerProc.communicate()
+            sipp_server_proc.kill()
+            outs.errs = sipp_server_proc.communicate()
                        
-        self.assertTrue(HowManySuccess(ps.script,ps.pid)==1)
-        self.assertTrue(HowManySuccess(pc.script,pc.pid)==1)
+        self.assertTrue(how_many_success(ps.script, ps.pid) == 1)
+        self.assertTrue(how_many_success(pc.script, pc.pid) == 1)
+        cleanup_screen_log(ps.script, ps.pid)
+        cleanup_screen_log(pc.script, pc.pid)
 
-        
 
-        
-suite = unittest.TestLoader().loadTestsFromTestCase(SippTestCase)
-unittest.TextTestRunner(verbosity=2).run(suite)
