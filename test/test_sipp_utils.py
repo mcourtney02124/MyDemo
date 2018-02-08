@@ -10,7 +10,7 @@ import os.path
 import shutil
 import unittest
 
-from src.sipp_utils import no_failed_calls, how_many_success
+from src.sipp_utils import no_failed_calls, how_many_success, cleanup_screen_log
 
 
 class SippUtilsTestCase(unittest.TestCase):
