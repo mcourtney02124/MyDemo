@@ -42,8 +42,11 @@ def empty_screen_log(script, pid):
 	""" Return True if screen log file exists and is empty.
 	"""
 	file_path = "data/" + script[:-4] + "_" + str(pid) + "_screen.log"
-	if os.path.getsize(file_path) == 0 and os.path.isfile(file_path):
-		return True
+	if os.path.isfile(file_path):
+		if os.path.getsize(file_path) == 0:
+			return True
+		else:
+			return False
 	else:
 		return False
 	
