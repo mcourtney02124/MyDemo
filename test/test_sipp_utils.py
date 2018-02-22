@@ -42,3 +42,12 @@ class SippUtilsTestCase(unittest.TestCase):
         cleanup_screen_log(script, pid)
         self.assertFalse(os.path.isfile(file_path))
         
+    def test_empty_screen_log(self):
+        """ File must exist and have size 0. """
+        script = "test_data.xml"
+        pid = 3876
+        self.assertFalse(script,pid)
+        pid = 0
+        self.assertFalse(script,pid)
+        pid = 3878
+        self.assertTrue(script,pid)

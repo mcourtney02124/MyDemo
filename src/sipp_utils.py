@@ -37,6 +37,16 @@ def parse_screen_log(script, pid, regexper):
 				fh.close()	
 					
 	return ret_value
+
+def empty_screen_log(script, pid):
+	""" Return True if screen log file exists and is empty.
+	"""
+	file_path = "data/" + script[:-4] + "_" + str(pid) + "_screen.log"
+	if os.path.getsize(file_path) == 0 and os.path.isfile(file_path):
+		return True
+	else:
+		return False
+	
 	
 def no_failed_calls(script, pid):
 	"""Determine is the specified script run reported any failed calls."""

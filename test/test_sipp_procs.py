@@ -6,6 +6,7 @@ This module provides unit tests for executing sipp scripts (Sipp module)
 
 """
 
+import os.path
 import unittest
 import time
 
@@ -48,8 +49,11 @@ class SippTestCase(unittest.TestCase):
             sipp_server_proc.kill()
             outs.errs = sipp_server_proc.communicate()
         
-        # The script ran, took no calls, and there was a clean manual shutdown.
-        self.assertTrue(no_failed_calls(p.script, p.pid))
+        # The script ran, took no calls - this may mean the screen log file is null, and there was a clean manual shutdown.
+        if empty_screen_log(p.script, p.pid):
+            self.assertTrue()
+        else:
+            self.assertTrue(no_failed_calls(p.script, p.pid))
         cleanup_screen_log(p.script,p.pid)
         
     def test_launch_server_options(self):
