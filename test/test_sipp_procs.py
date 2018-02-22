@@ -11,7 +11,7 @@ import unittest
 import time
 
 from src.sipp_procs import SippServer, SippClient
-from src.sipp_utils import no_failed_calls, how_many_success, cleanup_screen_log
+from src.sipp_utils import no_failed_calls, how_many_success, cleanup_screen_log, empty_screen_log
 
 
 class SippTestCase(unittest.TestCase):
