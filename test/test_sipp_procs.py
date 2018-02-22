@@ -69,30 +69,54 @@ class SippTestCase(unittest.TestCase):
         self.assertTrue(no_failed_calls(p.script, p.pid))
         cleanup_screen_log(p.script, p.pid)
         
-    def test_run_1_call(self):
-        """Make and launch server, make and launch client to run 1 call, both report 1 successful call."""
-        ps = SippServer(command="-m 1")
-        pc = SippClient(command="-m 1")
+class SippRunCallsTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        """ Make and launch server. """
+        ps = SippServer()
         sipp_server_proc = SippServer.launch(ps)
         time.sleep(2)
+        
+    def tearDown(self):
+        """ Make sure server is down. """
+        try:
+            outs, errs = sipp_server_proc.communicate(input = "q", timeout = 10)
+        except TimeoutExpired:
+            sipp_server_proc.kill()
+            outs.errs = sipp_server_proc.communicate()
+        cleanup_screen_log(ps.script, ps.pid)
+        
+    def test_run_1_call(self):
+        """The setUp will launch server, make and launch client to run 1 call, report 1 successful call."""
+        
+        pc = SippClient(command="-m 1")
         sipp_client_proc = SippClient.launch(pc)
         time.sleep(12)
-        # at this point, both processes have finished and created their trace_screen files, but make sure they are down
+        # at this point,
         try:
             outs, errs = sipp_client_proc.communicate(input = "q", timeout = 10)
         except TimeoutExpired:
             sipp_client_proc.kill()
             outs.errs = sipp_client_proc.communicate()
             
-        try:
-            outs, errs = sipp_server_proc.communicate(input = "q", timeout = 10)
-        except TimeoutExpired:
-            sipp_server_proc.kill()
-            outs.errs = sipp_server_proc.communicate()
-                       
-        self.assertTrue(how_many_success(ps.script, ps.pid) == 1)
         self.assertTrue(how_many_success(pc.script, pc.pid) == 1)
-        cleanup_screen_log(ps.script, ps.pid)
+        
         cleanup_screen_log(pc.script, pc.pid)
 
+    def test_run_3_cps(self):
+        """The setUp will launch server, make and launch client to run 30 calls at 3 calls per second, report 30 successful calls."""
+        
+        pc = SippClient(command="-r 3 -m 30")
+        sipp_client_proc = SippClient.launch(pc)
+        time.sleep(12)
+        # at this point,
+        try:
+            outs, errs = sipp_client_proc.communicate(input = "q", timeout = 10)
+        except TimeoutExpired:
+            sipp_client_proc.kill()
+            outs.errs = sipp_client_proc.communicate()
+            
+        self.assertTrue(how_many_success(pc.script, pc.pid) == 30)
+        
+        cleanup_screen_log(pc.script, pc.pid)
 
