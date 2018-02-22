@@ -46,8 +46,8 @@ class SippUtilsTestCase(unittest.TestCase):
         """ File must exist and have size 0. """
         script = "test_data.xml"
         pid = 3876
-        self.assertFalse(script,pid)
+        self.assertFalse(empty_screen_log(script,pid))
         pid = 0
-        self.assertFalse(script,pid)
+        self.assertFalse(empty_screen_log(script,pid))
         pid = 3878
-        self.assertTrue(script,pid)
+        self.assertTrue(empty_screen_log(script,pid))
