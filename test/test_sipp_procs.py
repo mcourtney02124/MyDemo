@@ -51,7 +51,7 @@ class SippTestCase(unittest.TestCase):
         
         # The script ran, took no calls - this may mean the screen log file is null, and there was a clean manual shutdown.
         if empty_screen_log(p.script, p.pid):
-            self.assertTrue()
+            self.assertTrue(True)
         else:
             self.assertTrue(no_failed_calls(p.script, p.pid))
         cleanup_screen_log(p.script,p.pid)
