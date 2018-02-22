@@ -71,20 +71,22 @@ class SippTestCase(unittest.TestCase):
         
 class SippRunCallsTestCase(unittest.TestCase):
     
+    ps = SippServer()
+    sipp_server_proc = None
+    
     def setUp(self):
         """ Make and launch server. """
-        ps = SippServer()
-        sipp_server_proc = SippServer.launch(ps)
+        SippRunCallsTestCase.sipp_server_proc = SippServer.launch(SippRunCallsTestCase.ps)
         time.sleep(2)
         
     def tearDown(self):
         """ Make sure server is down. """
         try:
-            outs, errs = sipp_server_proc.communicate(input = "q", timeout = 10)
+            outs, errs = SippRunCallsTestCase.sipp_server_proc.communicate(input = "q", timeout = 10)
         except TimeoutExpired:
-            sipp_server_proc.kill()
-            outs.errs = sipp_server_proc.communicate()
-        cleanup_screen_log(ps.script, ps.pid)
+            SippRunCallsTestCase.sipp_server_proc.kill()
+            outs.errs = SippRunCallsTestCase.sipp_server_proc.communicate()
+        cleanup_screen_log(SippRunCallsTestCase.ps.script, SippRunCallsTestCase.ps.pid)
         
     def test_run_1_call(self):
         """The setUp will launch server, make and launch client to run 1 call, report 1 successful call."""
@@ -108,7 +110,7 @@ class SippRunCallsTestCase(unittest.TestCase):
         
         pc = SippClient(command="-r 3 -m 30")
         sipp_client_proc = SippClient.launch(pc)
-        time.sleep(12)
+        time.sleep(15)
         # at this point,
         try:
             outs, errs = sipp_client_proc.communicate(input = "q", timeout = 10)
