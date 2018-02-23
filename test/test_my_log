@@ -6,6 +6,8 @@
 This module provides unit tests for writing log files for the toy ivr application
 
 """
+import unittest
+
 import os.path
 import time
 from src.my_log import log_line
