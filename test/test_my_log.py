@@ -10,7 +10,7 @@ import unittest
 
 import os.path
 import time
-from src.my_log import log_line
+from src.my_log import MyLog
 
 class MyLogTestCase(unittest.TestCase):
     """Tests for `my_log.py`, these are assumed to be executed from top level directory."""
