@@ -8,6 +8,7 @@ This module provides unit tests for writing log files for the toy ivr applicatio
 """
 import unittest
 
+import os
 import os.path
 import time
 from src.my_log import MyLog
@@ -23,3 +24,4 @@ class MyLogTestCase(unittest.TestCase):
         logfile.logfile.close()
         
         self.assertTrue(os.path.isfile(logfile.filepath) and os.path.getsize(logfile.filepath) > 0)
+        os.remove(logfile.filepath)
