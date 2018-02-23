@@ -23,5 +23,5 @@ class MyLog:
         """
         Make a string of keyval (timestamp), the timestamp's readable form, and data, and write it to the specified log
         """
-        self.logfile.write(keyval + "," + time.ctime(keyval) + "," + data + "\n")
+        self.logfile.write(str(keyval) + "," + time.ctime(keyval) + "," + data + "\n")
         
