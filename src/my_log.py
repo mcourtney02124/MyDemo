@@ -19,9 +19,9 @@ class MyLog:
         self.filepath = filepath
         self.logfile = open(filepath, "w", encoding = "utf08")
     
-    def log_line(self, id, data):
+    def log_line(self, keyval, data):
         """
-        Make a string of id (timestamp), the timestamp's readable form, and data, and write it to the specified log
+        Make a string of keyval (timestamp), the timestamp's readable form, and data, and write it to the specified log
         """
-        self.logfile.write(id + "," + time.ctime(id) + "," + data + "\n")
+        self.logfile.write(keyval + "," + time.ctime(keyval) + "," + data + "\n")
         
