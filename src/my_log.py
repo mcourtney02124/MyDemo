@@ -17,7 +17,7 @@ class MyLog:
         Constructor for the transaction log.
         '''
         self.filepath = filepath
-        self.logfile = open(filepath, "w", encoding = "utf08")
+        self.logfile = open(filepath, "w", encoding = "utf8")
     
     def log_line(self, keyval, data):
         """
